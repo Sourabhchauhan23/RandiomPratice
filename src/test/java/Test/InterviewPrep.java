@@ -1,7 +1,7 @@
 package Test;
 
 import Util.Util;
-import Util.APIResouces;
+import Util.Resouces;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.restassured.path.json.JsonPath;
@@ -10,9 +10,13 @@ import io.restassured.specification.RequestSpecification;
 import org.example.Data;
 import org.example.Page;
 import org.junit.Assert;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.support.PageFactory;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 
 import static io.restassured.RestAssured.*;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
@@ -26,9 +30,14 @@ public class InterviewPrep extends Util {
     RequestSpecification res=null;
     Response resp=null;
 
+    WebDriver driver = new EdgeDriver();
+
+    InterviewPrep interviewPrep = PageFactory.initElements(driver,InterviewPrep.class);
+
+
     @Given("The user is on {string}.")
     public void theUserIsOn(String resource) throws IOException {
-        APIResouces resourceAPI=APIResouces.valueOf(resource);
+        Resouces resourceAPI= Resouces.valueOf(resource);
         res =given().spec(buildRequest()).contentType("application/json");
         response = res.get(resourceAPI.getResource());
         res.get(resourceAPI.getResource()).then().assertThat()
@@ -53,19 +62,25 @@ public class InterviewPrep extends Util {
 
     @Given("The user is at {string}.")
     public void theUserIsAt(String resource) throws IOException {
-        APIResouces resourceAPI=APIResouces.valueOf(resource);
-        res =given().spec(buildRequest()).contentType("application/json");
-        Page page = res.get(resourceAPI.getResource()).then()
-                .extract().as(Page.class);
-        assertThat(page.getTotal_pages(), equalTo("2"));
-        System.out.println(page.getData().size());
-        resp = res.get(resourceAPI.getResource());
-        Data dd= page.getData().stream().filter(x -> x.getLast_name().equalsIgnoreCase("Howell"))
-                .findFirst().orElse(null);
+        if(resource.equals("Google")){
+            Resouces website= Resouces.valueOf(resource);
+            driver.get(website.getResource());
+            driver.manage().window().maximize();
+            driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 
+        }else {
+            Resouces resourceAPI= Resouces.valueOf(resource);
+            res =given().spec(buildRequest()).contentType("application/json");
+            Page page = res.get(resourceAPI.getResource()).then()
+                    .extract().as(Page.class);
+            assertThat(page.getTotal_pages(), equalTo("2"));
+            System.out.println(page.getData().size());
+            resp = res.get(resourceAPI.getResource());
+            Data dd= page.getData().stream().filter(x -> x.getLast_name().equalsIgnoreCase("Howell"))
+                    .findFirst().orElse(null);
 
-
-
-
+        }
     }
+
+
 }

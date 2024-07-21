@@ -1,9 +1,7 @@
 package Test;
 
-import org.apache.commons.logging.impl.Log4JLogger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -14,11 +12,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 
